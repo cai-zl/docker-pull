@@ -18,8 +18,9 @@
     - 同步后镜像名称:版本 示例`mysql-server:latest`或者`installers:debian`
     - 仓库地址 示例：`registry.cn-chengdu.aliyuncs.com`就是仓库域名地址
     - 空间名称 示例：`aopkcn`其中`ghcr.io/aopkcn/installers:debian`aopkcn就是空间名称
-    - 系统架构 自行根据架构选择，如果拉取的镜像中没有将拉取失败，默认amd64
 
 4. 最后点击 `Run workfow`等待镜像拉取推送
+
+> 说明：现在会直接同步源镜像的所有架构（amd64、arm64 等）到目标仓库，无需手动选择架构。
 
 ## 注意：自建仓库请保证GitHub能够访问，否则将无法推送！！！ 

@@ -37,10 +37,12 @@ jobs:
         if: ${{ steps.login.outcome != 'success' }}
         run: echo "Docker 登录失败"
 
-      - name: 同步源镜像的所有架构到目标仓库
+      - name: 同步 amd64 和 arm64 镜像到目标仓库
         id: pull_tag_push
         run: |
           docker buildx imagetools create \
+            --platform linux/amd64 \
+            --platform linux/arm64 \
             --tag ${{ github.event.inputs.TARGET_REGISTRY }}/${{ github.event.inputs.TARGET_REPOSITORY }}/${{ github.event.inputs.NEW_NAME }} \
             ${{ github.event.inputs.IMAGE_NAME }}
         continue-on-error: true

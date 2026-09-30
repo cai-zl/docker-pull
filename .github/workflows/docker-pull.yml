@@ -19,6 +19,19 @@ on:
         description: '空间名称'
         required: true
         default: 'caizl'
+      ARCH:
+        description: '系统架构'
+        required: true
+        default: 'amd64'
+        type: choice
+        options:
+          - amd64
+          - arm64
+          - arm/v7
+          - arm/v6
+          - 386
+          - s390x
+          - ppc64le
 
 jobs:
   build:
@@ -37,14 +50,12 @@ jobs:
         if: ${{ steps.login.outcome != 'success' }}
         run: echo "Docker 登录失败"
 
-      - name: 同步 amd64 和 arm64 镜像到目标仓库
+      - name: 拉取、标记并推送 Docker 镜像
         id: pull_tag_push
         run: |
-          docker buildx imagetools create \
-            --platform linux/amd64 \
-            --platform linux/arm64 \
-            --tag ${{ github.event.inputs.TARGET_REGISTRY }}/${{ github.event.inputs.TARGET_REPOSITORY }}/${{ github.event.inputs.NEW_NAME }} \
-            ${{ github.event.inputs.IMAGE_NAME }}
+          docker pull --platform ${{ github.event.inputs.ARCH }} ${{ github.event.inputs.IMAGE_NAME }}
+          docker tag ${{ github.event.inputs.IMAGE_NAME }} ${{ github.event.inputs.TARGET_REGISTRY }}/${{ github.event.inputs.TARGET_REPOSITORY }}/${{ github.event.inputs.NEW_NAME }}
+          docker push ${{ github.event.inputs.TARGET_REGISTRY }}/${{ github.event.inputs.TARGET_REPOSITORY }}/${{ github.event.inputs.NEW_NAME }}
         continue-on-error: true
 
       - name: 检查镜像推送成功
